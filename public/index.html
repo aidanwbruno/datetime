@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+  <title>Datetime</title>
+</head>
+<body>
+  <div id="countdown">Countdown: 10</div>
+  <button onclick="restartCountdown()">Restart Countdown</button>
+  
+  <script type="text/javascript">
+    let socket = io('http://localhost:3333'); // conectar ao servidor Socket.io
+
+    // receber atualizações do contador do servidor
+    socket.on('countdown', function(count) {
+      updateCountdown(count);
+    });
+
+    // função para atualizar a exibição do contador na página
+    function updateCountdown(count) {
+      document.getElementById('countdown').innerHTML = 'Countdown: ' + count;
+    }
+
+    // função para reiniciar o contador
+    function restartCountdown() {
+      socket.emit('restart'); // enviar um evento 'restart' para o servidor
+    }
+  </script>
+</body>
+</html>
