@@ -24,27 +24,17 @@ function startCountdown() {
   }, 1000);
 }
 
-// função para reiniciar o contador
-function restartCountdown() {
-  clearInterval(countdownInterval);
-  count = 10;
-  startCountdown();
-}
-
 io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`);
 
-  // enviar o contador atual para o cliente recém-conectado
-  socket.emit('countdown', count);
+  socket.on('getCountdown', function() {
+    // enviar o contador atual para o cliente recém-conectado
+    socket.emit('countdown', count);
 
-  // iniciar o contador se ainda não estiver em andamento
-  if (!countdownInterval) {
-    startCountdown();
-  }
-
-  // lidar com o evento 'restart' recebido do cliente
-  socket.on('restart', () => {
-    restartCountdown();
+    // iniciar o contador se ainda não estiver em andamento
+    if (!countdownInterval) {
+      startCountdown();
+    }
   });
 
   socket.on('disconnect', () => {

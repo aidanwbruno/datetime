@@ -9,25 +9,33 @@
 </head>
 <body>
   <div id="countdown">Countdown: 10</div>
-  <button onclick="restartCountdown()">Restart Countdown</button>
-  
+  <button id="connectButton">Connect</button>
+
   <script type="text/javascript">
-    let socket = io('http://localhost:3333'); // conectar ao servidor Socket.io
-
-    // receber atualizações do contador do servidor
-    socket.on('countdown', function(count) {
-      updateCountdown(count);
-    });
-
     // função para atualizar a exibição do contador na página
     function updateCountdown(count) {
       document.getElementById('countdown').innerHTML = 'Countdown: ' + count;
     }
 
-    // função para reiniciar o contador
-    function restartCountdown() {
-      socket.emit('restart'); // enviar um evento 'restart' para o servidor
-    }
+    document.getElementById('connectButton').addEventListener('click', function() {
+      let socket = io('http://localhost:3333'); // conectar ao servidor Socket.io
+
+      socket.on('connect', function() {
+        console.log('Connected to server');
+
+        // solicitar o contador atual ao servidor ao se conectar
+        socket.emit('getCountdown');
+      });
+
+      // receber atualizações do contador do servidor
+      socket.on('countdown', function(count) {
+        updateCountdown(count);
+      });
+
+      socket.on('disconnect', function() {
+        console.log('Disconnected from server');
+      });
+    });
   </script>
 </body>
 </html>
